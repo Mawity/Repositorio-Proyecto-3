@@ -1,0 +1,28 @@
+
+
+generacionMapa(){
+
+	if(infectadosVivos=0 && tandas<2){
+		generarTanda();
+		tandas++;
+	}
+		
+}
+
+generarTanda(){
+	aGenerar = nivel.getMaxInfectados()/2;
+
+	Random r = new Random(10, bordePantalla-10);
+	Timer t = new Timer();
+
+	if(t mod 4 = 0){
+		Infectado infc = new Infectado(posX, posY);
+		infc.mostrar();
+	}
+
+}
+
+generarInfectado(posX, posY){
+	
+
+}

@@ -1,0 +1,5 @@
+
+
+movimientoInfectado(){
+		setPosicion(getPosX(), getPosY()+velocidad);
+}

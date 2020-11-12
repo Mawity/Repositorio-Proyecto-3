@@ -1,0 +1,12 @@
+
+
+movimientoJugador(inputKey){
+	if(inputKey=derecha){
+		setPosicion(getPosX()+5,getPosY());
+
+	}else if(inputKey=izquierda){
+		setPosicion(getPosX()-5,getPosY());
+
+	}
+	
+}
