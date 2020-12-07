@@ -9,6 +9,8 @@ public abstract class Entity {
 	
 	protected int x;
 	protected int y;
+	protected int anchoSprite;
+	protected int altoSprite;
 	
 	public abstract void move();
 	

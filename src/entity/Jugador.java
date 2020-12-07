@@ -25,6 +25,7 @@ public class Jugador extends Entity{
 		anchoJugador = imageIcon.getIconWidth();
 		int xInicial = Constants.GAME_WIDTH/2 - anchoJugador/2;
 		int yInicial = Constants.GAME_HEIGHT-100;
+		
 		velocidadX = 0;
 		derechaPressed = false;
 		izquierdaPressed = false;
@@ -46,11 +47,7 @@ public class Jugador extends Entity{
 			}
 		}else {
 			x += velocidadX;
-		}
-		
-		
-		
-		
+		}	
 	}
 	
 	

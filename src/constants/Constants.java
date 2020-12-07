@@ -21,7 +21,7 @@ public class Constants {
 	public static final String JUGADOR_IMAGE_URL = "imagenes/Dart_Monkey.png";
 	public static final String PREMIO_TIEMPO_IMAGE_URL = "";
 	public static final String PREMIO_VIDA_IMAGE_URL = "";
-	public static final String PROYECTIL_IMAGE_URL = "";
+	public static final String PROYECTIL_IMAGE_URL = "imagenes/icon.png";
 	public static final String VENENO_IMAGE_URL = "";
 	public static final String BACKGROUND_IMAGE_URL = "imagenes/background.jpg";
 	public static final String ICON_IMAGE_URL = "imagenes/icon.png";
