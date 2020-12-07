@@ -11,14 +11,6 @@ public class GameLoop implements ActionListener{
 		this.gamePanel = gamePanel;
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		this.gamePanel.loop();
