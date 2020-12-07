@@ -21,7 +21,7 @@ public class GameLoop implements ActionListener{
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		this.gamePanel.doOneLoop();
+		this.gamePanel.loop();
 		
 	}
 	
