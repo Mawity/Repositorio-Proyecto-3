@@ -53,6 +53,8 @@ public class Jugador extends Entity{
 		}else {
 			x += velocidad;
 		}	
+		
+		setHitbox();
 	}
 	
 	

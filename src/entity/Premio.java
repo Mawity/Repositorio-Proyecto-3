@@ -44,6 +44,7 @@ public class Premio extends Entity{
 	@Override
 	public void move() {
 		this.y += this.velocidad;
+		setHitbox();
 	}
 	
 	public void trigger() {

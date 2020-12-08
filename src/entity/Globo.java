@@ -66,7 +66,7 @@ public class Globo extends Entity {
 		if(y>Constants.GAME_HEIGHT) {
 			setDead(true);
 		}
-
+		setHitbox();
 	}
 	
 	public void atacar(Jugador jugador) {

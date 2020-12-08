@@ -38,6 +38,7 @@ public class Dardo extends Entity{
 		if(y<-altoSprite) {
 			setDead(true);
 		}
+		setHitbox();
 	}
 	
 	public void atacar(Globo globo) {
