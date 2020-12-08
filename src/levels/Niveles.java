@@ -1,4 +1,4 @@
-package gui;
+package levels;
 
 public class Niveles {
 	

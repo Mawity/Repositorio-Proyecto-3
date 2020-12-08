@@ -8,36 +8,31 @@ import image.ImageFactory;
 
 public class Dardo extends Entity{
 
-	private int velocidadY;
-	private Jugador jugador;
-	private int alturaSprite;
 	
 	public Dardo(int x) {
 		
 		inicializar(x);
 	}
 	
-	
-	
 	private void inicializar(int x) {
-		velocidadY = 10;
+		velocidad = 10;
 		
 		ImageIcon imageIcon = ImageFactory.crearImagen(Image.ICON);
 		setImage(imageIcon.getImage());
-		alturaSprite = imageIcon.getIconHeight();
+		altoSprite = imageIcon.getIconHeight();
 		int xInicial = x+25;
 		int yInicial = Constants.GAME_HEIGHT-100;
 		
 		setX(xInicial);
 		setY(yInicial);
+		
+		setHitbox();
 	}
-
-	
 
 	@Override
 	public void move() {
-		this.y -= velocidadY;
-		if(y<-alturaSprite) {
+		this.y -= velocidad;
+		if(y<-altoSprite) {
 			setDead(true);
 		}
 	}

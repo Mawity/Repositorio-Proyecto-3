@@ -11,6 +11,9 @@ public abstract class Entity {
 	protected int y;
 	protected int anchoSprite;
 	protected int altoSprite;
+	protected int velocidad;
+	
+	protected Hitbox hitbox;
 	
 	public abstract void move();
 	
@@ -30,6 +33,10 @@ public abstract class Entity {
 	
 	public Image getImage() {
 		return image;
+	}
+	
+	public void setHitbox() {
+		hitbox = new Hitbox(x, y, anchoSprite, altoSprite);
 	}
 	
 	public void setX(int x) {
