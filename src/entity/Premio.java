@@ -6,7 +6,8 @@ import image.Image;
 import image.ImageFactory;
 import powers.Efecto;
 import powers.HealthPot;
-import powers.TimeStop;
+import powers.Slow;
+import visitor.Visitor;
 
 public class Premio extends Entity{
 	
@@ -19,11 +20,11 @@ public class Premio extends Entity{
 	
 	private void inicializar(int i) {
 		ImageIcon imageIcon;
-		velocidad = 15;
+		velocidad = 3;
 		switch (i) {
 		
 		case 0: 
-			efecto = new TimeStop();
+			efecto = new Slow();
 			imageIcon = ImageFactory.crearImagen(Image.PREMIO_TIEMPO);
 			setImage(imageIcon.getImage());
 			
@@ -35,6 +36,9 @@ public class Premio extends Entity{
 		default:
 			efecto = null;
 		}
+		
+		setHitbox();
+
 	}
 
 	@Override
@@ -42,6 +46,14 @@ public class Premio extends Entity{
 		this.y += this.velocidad;
 	}
 	
+	public void trigger() {
+		efecto.realizarEfecto();
+	}
+	
+	public void accept(Visitor v) {
+		v.visit(this);
+		
+	}
 	
 	
 	

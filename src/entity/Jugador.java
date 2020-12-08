@@ -6,12 +6,14 @@ import javax.swing.ImageIcon;
 
 import constants.Constants;
 import image.*;
+import visitor.Visitor;
 
 
 public class Jugador extends Entity{
 
 	private boolean derechaPressed, izquierdaPressed;
 	private int vidas;
+	protected static Jugador jugador;
 	
 	
 	
@@ -58,12 +60,12 @@ public class Jugador extends Entity{
 		int key = e.getKeyCode();
 		
 		if(key==KeyEvent.VK_LEFT) {
-			velocidad = -3;
+			velocidad = -5;
 			izquierdaPressed = true;
 		}
 		
 		if(key==KeyEvent.VK_RIGHT) {
-			velocidad = 3;
+			velocidad = 5;
 			derechaPressed = true;
 		}
 	}
@@ -107,6 +109,19 @@ public class Jugador extends Entity{
 	}
 	
 
+	public static Jugador getJugador() {
+		return jugador;
+	}
+	
+	public void setJugador() {
+		jugador = this; 
+	}
+
+	
+	public void accept(Visitor v) {
+		v.visit(this);
+		
+	}
 
 
 

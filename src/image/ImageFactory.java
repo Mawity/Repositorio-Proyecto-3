@@ -13,11 +13,14 @@ public class ImageFactory {
 		
 		switch(imagen) {
 		
-		case INFECTADO_ALPHA:
-			imageIcon = new ImageIcon(Constants.INFECTADO_ALPHA_IMAGE_URL);
+		case GLOBO_ROJO:
+			imageIcon = new ImageIcon(Constants.GLOBO_ROJO_IMAGE_URL);
 			break;
-		case INFECTADO_BETA:
-			imageIcon = new ImageIcon(Constants.INFECTADO_BETA_IMAGE_URL);
+		case GLOBO_AZUL:
+			imageIcon = new ImageIcon(Constants.GLOBO_AZUL_IMAGE_URL);
+			break;
+		case GLOBO_VERDE:
+			imageIcon = new ImageIcon(Constants.GLOBO_VERDE_IMAGE_URL);
 			break;
 		case JUGADOR:
 			imageIcon = new ImageIcon(Constants.JUGADOR_IMAGE_URL);
@@ -30,9 +33,6 @@ public class ImageFactory {
 			break;
 		case PROYECTIL:
 			imageIcon = new ImageIcon(Constants.PROYECTIL_IMAGE_URL);
-			break;
-		case VENENO:
-			imageIcon = new ImageIcon(Constants.VENENO_IMAGE_URL);
 			break;
 		case BACKGROUND:
 			imageIcon = new ImageIcon(Constants.BACKGROUND_IMAGE_URL);

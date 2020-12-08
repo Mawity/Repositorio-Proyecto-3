@@ -5,9 +5,11 @@ import javax.swing.ImageIcon;
 import constants.Constants;
 import image.Image;
 import image.ImageFactory;
+import visitor.Visitor;
 
 public class Dardo extends Entity{
 
+	private int dmg;
 	
 	public Dardo(int x) {
 		
@@ -16,6 +18,7 @@ public class Dardo extends Entity{
 	
 	private void inicializar(int x) {
 		velocidad = 10;
+		dmg = 1;
 		
 		ImageIcon imageIcon = ImageFactory.crearImagen(Image.ICON);
 		setImage(imageIcon.getImage());
@@ -36,5 +39,14 @@ public class Dardo extends Entity{
 			setDead(true);
 		}
 	}
+	
+	public void atacar(Globo globo) {
+		globo.decreaseLives(dmg);
+	}
 
+	
+	public void accept(Visitor v) {
+		v.visit(this);
+		
+	}
 }

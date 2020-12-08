@@ -1,8 +1,11 @@
 package entity;
 
 import java.awt.Image;
+import java.awt.Rectangle;
 
-public abstract class Entity {
+import visitor.Visitable;
+
+public abstract class Entity implements Visitable{
 	
 	private Image image;
 	private boolean dead;
@@ -13,17 +16,14 @@ public abstract class Entity {
 	protected int altoSprite;
 	protected int velocidad;
 	
-	protected Hitbox hitbox;
+	protected Rectangle hitbox;
 	
 	public abstract void move();
 	
 	public Entity() {
 		this.dead = false;
 	}
-	
-	public void desaparecer() {
-		this.dead = true;
-	}
+
 	
 	// getters y setters
 	
@@ -36,7 +36,11 @@ public abstract class Entity {
 	}
 	
 	public void setHitbox() {
-		hitbox = new Hitbox(x, y, anchoSprite, altoSprite);
+		hitbox = new Rectangle(x, y, anchoSprite, altoSprite);
+	}
+	
+	public Rectangle getHitbox() {
+		return hitbox;
 	}
 	
 	public void setX(int x) {

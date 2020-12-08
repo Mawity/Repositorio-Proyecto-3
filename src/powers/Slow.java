@@ -1,6 +1,6 @@
 package powers;
 
-public class TimeStop extends Efecto{
+public class Slow extends Efecto{
 
 	@Override
 	public void realizarEfecto() {

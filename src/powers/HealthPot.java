@@ -1,11 +1,13 @@
 package powers;
 
+import entity.Jugador;
+
 public class HealthPot extends Efecto{
 
+		
 	@Override
 	public void realizarEfecto() {
-		// TODO Auto-generated method stub
-		
+		Jugador.getJugador().increaseLives(50);
 	}
-
+	
 }
