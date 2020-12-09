@@ -46,6 +46,7 @@ public class Globo extends Entity {
 	private void establecerImagen(int capas) {
 		ImageIcon imageIcon;
 		
+		
 		if(capas==1) {
 			imageIcon = ImageFactory.crearImagen(Image.GLOBO_ROJO);
 			setImage(imageIcon.getImage());

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Random;
 
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -125,7 +126,7 @@ public class GamePanel extends JPanel {
 		repaint();
 		// System.out.println(darts.size());
 		// System.out.println(bloons.size());
-
+		//perder(); //Borrar
 	}
 
 	private void update() {
@@ -268,19 +269,29 @@ public class GamePanel extends JPanel {
 	}
 
 	private void ganar() {
-		//timer.stop();
-		System.out.println("GANO");
-		System.out.println("GANO");
-		System.out.println("GANO");
-		System.out.println("GANO");
-		
+		timer.stop();
+		JOptionPane.showMessageDialog(this, "GANASTE!!", "Resultado", JOptionPane.INFORMATION_MESSAGE, null);
+		//luego de quitar el cartel se cierra el juego?
+		System.out.println("aca termino todo señores"); //Borrar
 	}
-
+	
 	private void perder() {
-		
-		
+		timer.stop();
+		JOptionPane.showMessageDialog(this, "PERDISTE /n Reseteando nivel.", "Resultado", JOptionPane.INFORMATION_MESSAGE, null);
+		resetLevel(); //Resetea el nivel despues de perder?
+
 	}
 
+	private void resetLevel() {
+		//resetea en nievel actual.
+		if (!lvls.isEmpty()) {
+			Nivel nivel_actual = lvls.get(0);
+			nivel_actual.reset();
+			//no se como mierda resetear las imagenes y las entidades del juego (estoy perdidisimo)
+			timer.restart();
+		}
+	}
+	
 	public void keyPressed(KeyEvent e) {
 		this.jugador.keyPressed(e);
 
