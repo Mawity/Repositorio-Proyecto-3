@@ -1,6 +1,6 @@
 package powers;
 
-public abstract class Efecto {
+public abstract class Efecto extends Thread{
 	
 	protected int duracion;
 	

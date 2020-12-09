@@ -1,7 +1,10 @@
 package entity;
 
+import java.util.Random;
+
 import javax.swing.ImageIcon;
 
+import constants.Constants;
 import image.Image;
 import image.ImageFactory;
 import powers.Efecto;
@@ -21,21 +24,30 @@ public class Premio extends Entity{
 	private void inicializar(int i) {
 		ImageIcon imageIcon;
 		velocidad = 3;
-		switch (i) {
+		Random r = new Random();
 		
-		case 0: 
+		if(i==0) {
 			efecto = new Slow();
 			imageIcon = ImageFactory.crearImagen(Image.PREMIO_TIEMPO);
 			setImage(imageIcon.getImage());
+
+			anchoSprite = imageIcon.getIconWidth();
+			altoSprite = imageIcon.getIconHeight();
 			
-		case 1:
+		}else if(i==1) {
 			efecto = new HealthPot();
 			imageIcon = ImageFactory.crearImagen(Image.PREMIO_VIDA);
 			setImage(imageIcon.getImage());
-			
-		default:
-			efecto = null;
+
+			anchoSprite = imageIcon.getIconWidth();
+			altoSprite = imageIcon.getIconHeight();
 		}
+		
+		int xInicial = r.nextInt(Constants.GAME_WIDTH-this.getImage().getWidth(null)/2);
+		int yInicial = -10;
+		
+		setX(xInicial);
+		setY(yInicial);
 		
 		setHitbox();
 

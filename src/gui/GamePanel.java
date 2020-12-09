@@ -139,7 +139,7 @@ public class GamePanel extends JPanel {
 		Random r = new Random();
 
 		if (r.nextInt(100) % 5 == 0) {
-			if (cantPremios < lvls.get(0).getCantPremios()) {
+			if (!lvls.isEmpty() && cantPremios < lvls.get(0).getCantPremios()) {
 				premios.add(new Premio(r.nextInt(100) % 2));
 				cantPremios++;
 			}
@@ -151,7 +151,7 @@ public class GamePanel extends JPanel {
 		Random r = new Random();
 		boolean agregadoEsteTick = false;
 
-		if (r.nextInt(1000) % 50 == 0) {
+		if (r.nextInt(1000) % 50 == 0 && !lvls.isEmpty()) {
 			if (globosRojos < lvls.get(0).getCantRojos()) {
 				bloons.add(new Globo(1));
 				globosRojos++;
@@ -170,9 +170,17 @@ public class GamePanel extends JPanel {
 			}
 		}
 
-		if (globosRojos + globosAzules + globosVerdes == lvls.get(0).getCantEnemigos()) {
-			if (bloons.isEmpty()) {
-				terminarNivel();
+		if (!lvls.isEmpty()) {
+			if (globosRojos + globosAzules + globosVerdes == lvls.get(0).getCantEnemigos()) {
+				if (bloons.isEmpty()) {
+					terminarNivel();
+				}
+			}
+		} else {
+			if (jugador.getVidas() <= 0) {
+				perder();
+			} else {
+				ganar();
 			}
 		}
 
@@ -221,56 +229,56 @@ public class GamePanel extends JPanel {
 		GloboCollisionVisitor visitorGlobo;
 		JugadorCollisionVisitor visitorJugador = new JugadorCollisionVisitor(jugador);
 
-		List<Dardo> consumedDart = new ArrayList<Dardo>();
-		List<Globo> popped = new ArrayList<Globo>();
-		List<Premio> consumedPrize = new ArrayList<Premio>();
-
 		for (Globo tempBloon : bloons) {
 			hitbox = tempBloon.getHitbox();
 
 			if (hitbox.intersects(jugador.getHitbox())) {
 				tempBloon.accept(visitorJugador);
+				if(jugador.isDead()) {
+					perder();
+				}
 			}
 
 			for (Dardo tempDart : darts) {
 				System.out.println(hitbox.intersects(tempDart.getHitbox()));
+
 				if (!tempBloon.isDead() && hitbox.intersects(tempDart.getHitbox())) {
-					System.out.println("ASDASDASD");
 					visitorGlobo = new GloboCollisionVisitor(tempBloon);
 					tempDart.accept(visitorGlobo);
 				}
 			}
 		}
-		
-		for(Premio tempPremio: premios) {
-			if (tempPremio.getHitbox().intersects(jugador.getHitbox())){
+
+		for (Premio tempPremio : premios) {
+			if (tempPremio.getHitbox().intersects(jugador.getHitbox())) {
 				tempPremio.accept(visitorJugador);
 			}
 		}
-
-
 		
+		System.out.println(jugador.getVidas());
+
 	}
 
 	private void terminarNivel() {
-
-		if (!lvls.isEmpty()) {
-			lvls.remove(0);
-			globosRojos = 0;
-			globosAzules = 0;
-			globosVerdes = 0;
-			cantPremios = 0;
-		} else {
-			if (!jugador.isDead()) {
-				ganar();
-			}
-		}
-
+		lvls.remove(0);
+		globosRojos = 0;
+		globosAzules = 0;
+		globosVerdes = 0;
+		cantPremios = 0;
 	}
 
 	private void ganar() {
-		timer.stop();
+		//timer.stop();
+		System.out.println("GANO");
+		System.out.println("GANO");
+		System.out.println("GANO");
+		System.out.println("GANO");
+		
+	}
 
+	private void perder() {
+		
+		
 	}
 
 	public void keyPressed(KeyEvent e) {

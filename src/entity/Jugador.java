@@ -25,11 +25,12 @@ public class Jugador extends Entity{
 		ImageIcon imageIcon = ImageFactory.crearImagen(Image.JUGADOR);
 		setImage(imageIcon.getImage());
 		anchoSprite = imageIcon.getIconWidth();
+		altoSprite = imageIcon.getIconHeight();
 		int xInicial = Constants.GAME_WIDTH/2 - anchoSprite/2;
 		int yInicial = Constants.GAME_HEIGHT-100;
 		
 		velocidad = 0;
-		vidas = 200;
+		vidas = Constants.VIDA_MAXIMA;
 		derechaPressed = false;
 		izquierdaPressed = false;
 		
@@ -80,7 +81,7 @@ public class Jugador extends Entity{
 			if(!derechaPressed) {
 				velocidad = 0;
 			}else {
-				velocidad = 3;
+				velocidad = 5;
 			}
 		}
 		
@@ -89,15 +90,15 @@ public class Jugador extends Entity{
 			if(!izquierdaPressed) {
 				velocidad = 0;
 			}else {
-				velocidad = -3;
+				velocidad = -5;
 			}
 		}
 	}
 
 	
 	public void increaseLives(int pv) {
-		if(vidas+pv>200) {
-			vidas = 200;
+		if(vidas+pv>Constants.VIDA_MAXIMA) {
+			vidas = Constants.VIDA_MAXIMA;
 		}else {
 			vidas += pv;
 		}
@@ -123,6 +124,10 @@ public class Jugador extends Entity{
 	public void accept(Visitor v) {
 		v.visit(this);
 		
+	}
+	
+	public int getVidas() {
+		return vidas;
 	}
 
 

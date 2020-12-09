@@ -7,7 +7,7 @@ public class HealthPot extends Efecto{
 		
 	@Override
 	public void realizarEfecto() {
-		Jugador.getJugador().increaseLives(50);
+		Jugador.getJugador().increaseLives(15);
 	}
 	
 }

@@ -24,6 +24,7 @@ public class GloboCollisionVisitor implements Visitor{
 	@Override
 	public void visit(Dardo dardo) {
 		dardo.atacar(globo);
+		dardo.setDead(true);
 		System.out.println("DARDOxGLOBO");
 	}
 

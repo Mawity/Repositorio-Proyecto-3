@@ -20,8 +20,10 @@ public class Dardo extends Entity{
 		velocidad = 10;
 		dmg = 1;
 		
-		ImageIcon imageIcon = ImageFactory.crearImagen(Image.ICON);
+		ImageIcon imageIcon = ImageFactory.crearImagen(Image.PROYECTIL);
 		setImage(imageIcon.getImage());
+		
+		anchoSprite = imageIcon.getIconWidth();
 		altoSprite = imageIcon.getIconHeight();
 		int xInicial = x+25;
 		int yInicial = Constants.GAME_HEIGHT-100;

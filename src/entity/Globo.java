@@ -22,6 +22,8 @@ public class Globo extends Entity {
 
 	private void incializar(int capas) {
 		this.capas = capas;
+		velocidad = Constants.VELOCIDAD_BASE_GLOBO;
+		
 
 		Random r = new Random();
 		
@@ -29,11 +31,11 @@ public class Globo extends Entity {
 
 		setHitbox();
 
-		int xInicial = r.nextInt(Constants.GAME_WIDTH);
+		int xInicial = r.nextInt(Constants.GAME_WIDTH-this.getImage().getWidth(null)/2);
 		int yInicial = -10;
 		
 		dmg = capas*2;
-		velocidad = capas+1;
+		velocidad += capas;
 		
 		setX(xInicial);
 		setY(yInicial);
@@ -65,7 +67,11 @@ public class Globo extends Entity {
 		y += velocidad;
 		if(y>Constants.GAME_HEIGHT) {
 			setDead(true);
+			atacar(Jugador.getJugador());
 		}
+		
+		
+		
 		setHitbox();
 	}
 	
