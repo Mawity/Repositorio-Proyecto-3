@@ -29,8 +29,17 @@ public class Constants {
 	public static final String PROYECTIL_IMAGE_URL = "imagenes/dart.png";
 	public static final String BACKGROUND_IMAGE_URL = "imagenes/background.jpg";
 	public static final String ICON_IMAGE_URL = "imagenes/icon.png";
-	
-	
+	//url numeros
+	public static final String NUM_0_IMAGE_URL = "imagenes/numero_0.png";
+	public static final String NUM_1_IMAGE_URL = "imagenes/numero_1.png";
+	public static final String NUM_2_IMAGE_URL = "imagenes/numero_2.png";
+	public static final String NUM_3_IMAGE_URL = "imagenes/numero_3.png";
+	public static final String NUM_4_IMAGE_URL = "imagenes/numero_4.png";
+	public static final String NUM_5_IMAGE_URL = "imagenes/numero_5.png";
+	public static final String NUM_6_IMAGE_URL = "imagenes/numero_6.png";
+	public static final String NUM_7_IMAGE_URL = "imagenes/numero_7.png";
+	public static final String NUM_8_IMAGE_URL = "imagenes/numero_8.png";
+	public static final String NUM_9_IMAGE_URL = "imagenes/numero_9.png";
 	
 	public static void modificarVelocidadGlobos(int i) {
 		VELOCIDAD_BASE_GLOBO += i;
