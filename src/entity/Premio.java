@@ -7,6 +7,7 @@ import javax.swing.ImageIcon;
 import constants.Constants;
 import image.Image;
 import image.ImageFactory;
+import powers.ExtraDMG;
 import powers.Efecto;
 import powers.HealthPot;
 import powers.Slow;
@@ -14,7 +15,6 @@ import visitor.Visitor;
 
 public class Premio extends Entity{
 	
-	private boolean esTemporal;
 	private Efecto efecto;
 	
 	
@@ -34,7 +34,6 @@ public class Premio extends Entity{
 
 			anchoSprite = imageIcon.getIconWidth();
 			altoSprite = imageIcon.getIconHeight();
-			esTemporal = true;
 			
 		}else if(i==1) {
 			efecto = new HealthPot();
@@ -43,7 +42,15 @@ public class Premio extends Entity{
 
 			anchoSprite = imageIcon.getIconWidth();
 			altoSprite = imageIcon.getIconHeight();
-			esTemporal = false;
+		}else if(i==2){
+			efecto = new ExtraDMG();
+			imageIcon = ImageFactory.crearImagen(Image.PREMIO_DMG);
+			setImage(imageIcon.getImage());
+
+			anchoSprite = imageIcon.getIconWidth();
+			altoSprite = imageIcon.getIconHeight();
+			
+			
 		}
 		
 		int xInicial = r.nextInt(Constants.GAME_WIDTH-this.getImage().getWidth(null)/2);

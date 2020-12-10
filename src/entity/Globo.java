@@ -22,7 +22,7 @@ public class Globo extends Entity {
 
 	private void incializar(int capas) {
 		this.capas = capas;
-		velocidad = Constants.VELOCIDAD_BASE_GLOBO;
+
 		
 
 		Random r = new Random();
@@ -35,7 +35,7 @@ public class Globo extends Entity {
 		int yInicial = -10;
 		
 		dmg = capas*2;
-		velocidad += capas;
+		velocidad = Constants.VELOCIDAD_BASE_GLOBO + capas;
 		
 		setX(xInicial);
 		setY(yInicial);
@@ -91,6 +91,14 @@ public class Globo extends Entity {
 	
 	public int getCapas() {
 		return capas;
+	}
+	
+	public void setVelocidad(int i) {
+		velocidad = i;
+	}
+	
+	public int getVelocidad() {
+		return velocidad;
 	}
 	
 	public void accept(Visitor v) {

@@ -1,5 +1,9 @@
 package powers;
 
-public class Efecto {
+public interface Efecto {
 
+	
+	public void realizarEfecto();
+
+	
 }

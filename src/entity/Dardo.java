@@ -18,7 +18,7 @@ public class Dardo extends Entity{
 	
 	private void inicializar(int x) {
 		velocidad = 10;
-		dmg = 1;
+		dmg = Constants.DMG_BASE_DARDO;
 		
 		ImageIcon imageIcon = ImageFactory.crearImagen(Image.PROYECTIL);
 		setImage(imageIcon.getImage());
@@ -46,7 +46,6 @@ public class Dardo extends Entity{
 	public void atacar(Globo globo) {
 		globo.decreaseLives(dmg);
 	}
-
 	
 	public void accept(Visitor v) {
 		v.visit(this);

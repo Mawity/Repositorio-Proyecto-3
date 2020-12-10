@@ -1,11 +1,15 @@
 package powers;
 
-public abstract class EfectoTemporal extends Efecto {
-	
+import gui.GamePanel;
+
+public abstract class EfectoTemporal implements Efecto{
+
 	int duracion;
+	int tiempoDeshacer;
+	GamePanel gamePanel;
 	
-	
-	public abstract void realizarEfecto();
+	public abstract void deshacerEfecto();
+	public abstract int getTiempoDeshacer();
 	
 	
 }

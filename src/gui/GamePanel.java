@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Random;
 
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -25,6 +26,8 @@ import image.Image;
 import image.ImageFactory;
 import levels.Nivel;
 import listener.GameEventListener;
+import powers.Efecto;
+import powers.EfectoTemporal;
 import visitor.GloboCollisionVisitor;
 import visitor.JugadorCollisionVisitor;
 
@@ -35,21 +38,26 @@ public class GamePanel extends JPanel {
 	private ImageIcon dig_vida_2;
 	private ImageIcon dig_vida_3;
 	
+	private JLabel lvlClear;
+	
+	protected static GamePanel instancia;
+	
 	private Timer timer;
+	private int tiempodeJuego;
 	private boolean inGame;
 	private int globosRojos;
 	private int globosAzules;
 	private int globosVerdes;
 	private int cantPremios;
-	private int dig_vida_orig1;
-	private int dig_vida_orig2;
-	private int dig_vida_orig3;
+
 
 	private Jugador jugador;
 	private List<Dardo> darts;
 	private List<Globo> bloons;
 	private List<Premio> premios;
 	private List<Nivel> lvls;
+	private List<EfectoTemporal> onGoingEffects;
+	
 
 	public GamePanel() {
 		inicializarVariables();
@@ -65,16 +73,20 @@ public class GamePanel extends JPanel {
 		this.bloons = new ArrayList<Globo>();
 		this.premios = new ArrayList<Premio>();
 		this.lvls = new ArrayList<Nivel>();
+		this.onGoingEffects = new ArrayList<EfectoTemporal>();
 
 		for (int i = 1; i < Constants.CANTIDAD_NIVELES + 1; i++) {
 			lvls.add(new Nivel(i));
 		}
 
-		this.BGImage = ImageFactory.crearImagen(Image.BACKGROUND);
+		this.BGImage = ImageFactory.crearImagen(Image.BACKGROUND);				
 		this.dig_vida_1 = ImageFactory.crearImagen(Image.NUM_1);
 		this.dig_vida_2 = ImageFactory.crearImagen(Image.NUM_0);
 		this.dig_vida_3 = ImageFactory.crearImagen(Image.NUM_0);
 		
+		this.lvlClear = new JLabel(ImageFactory.crearImagen(Image.LVL_CLEAR));
+		this.lvlClear.setVisible(false);
+		this.add(lvlClear);
 		this.timer = new Timer(Constants.GAME_SPEED, new GameLoop(this));
 		this.timer.start();
 	}
@@ -112,7 +124,6 @@ public class GamePanel extends JPanel {
 		super.paintComponent(g);
 
 		g.drawImage(BGImage.getImage(), 0, 0, null);
-
 		drawEntities(g);
 		drawLife(g);
 	}
@@ -138,9 +149,6 @@ public class GamePanel extends JPanel {
 			g.drawImage(dig_vida_1.getImage(), 0, 0, null);
 			g.drawImage(dig_vida_2.getImage(), dig_vida_1.getIconWidth(), 0, null);
 			g.drawImage(dig_vida_3.getImage(), dig_vida_1.getIconWidth()+dig_vida_2.getIconWidth(), 0, null);
-			dig_vida_orig1 = 1;
-			dig_vida_orig2 = 0;
-			dig_vida_orig3 = 0;
 		}else {
 			if (timer.isRunning())
 				timer.stop();
@@ -150,9 +158,7 @@ public class GamePanel extends JPanel {
 	public void loop() {
 		update();
 		repaint();
-		// System.out.println(darts.size());
-		// System.out.println(bloons.size());
-		//perder(); //Borrar
+		tiempodeJuego++;
 	}
 
 	private void update() {
@@ -161,26 +167,31 @@ public class GamePanel extends JPanel {
 		movimiento();
 		colisiones();
 		updateLife();
+		efectosPremios();
 	}
 	
 	private void updateLife() {
-		int dig1 = this.jugador.getVidas()/100;
-		int dig2 = ((this.jugador.getVidas()%100) / 10);
-		int dig3 = this.jugador.getVidas() % 10;
+		int dig1; 
+		int dig2;
+		int dig3;
 		
-		if (dig1 != this.dig_vida_orig1) {
-			this.dig_vida_orig1 = dig1;		
-			this.dig_vida_1 = getImageNumber(dig1);
-		} 
-		if (dig2 != this.dig_vida_orig2) {
-			this.dig_vida_orig2 = dig2;
-			this.dig_vida_2 = getImageNumber(dig2);
-		} 
-		if (dig3 != this.dig_vida_orig3) {
-			this.dig_vida_orig3 = dig3;
-			this.dig_vida_3 = getImageNumber(dig3);
+		if(jugador.getVidas()<=0) {
+			dig1 = 0;
+			dig2 = 0;
+			dig3 = 0;
+			
+		}else {
+			dig1 = this.jugador.getVidas()/100;
+			dig2 = ((this.jugador.getVidas()%100) / 10);
+			dig3 = this.jugador.getVidas() % 10;
 		}
-		System.out.println(dig1+" "+dig2+" "+dig3);
+
+			this.dig_vida_1 = getImageNumber(dig1);
+
+			this.dig_vida_2 = getImageNumber(dig2);
+
+			this.dig_vida_3 = getImageNumber(dig3);
+		
 	}
 	
 	private ImageIcon getImageNumber(int num) {
@@ -189,7 +200,6 @@ public class GamePanel extends JPanel {
 		
 		case 0:
 			toReturn = ImageFactory.crearImagen(Image.NUM_0);
-			System.out.println("Se Cambio Dig a 0"); //BORRAR
 			break;
 		case 1:
 			toReturn = ImageFactory.crearImagen(Image.NUM_1);
@@ -217,7 +227,6 @@ public class GamePanel extends JPanel {
 			break;
 		case 9:
 			toReturn = ImageFactory.crearImagen(Image.NUM_9);
-			System.out.println("Se Cambio Dig a 9"); //BORRAR
 			break;
 		}
 		
@@ -227,9 +236,9 @@ public class GamePanel extends JPanel {
 	private void spawnPremios() {
 		Random r = new Random();
 
-		if (r.nextInt(100) % 5 == 0) {
+		if (!lvls.isEmpty() && lvls.get(0).getCantRojos()==globosRojos && r.nextInt(100) % 15 == 0) {
 			if (!lvls.isEmpty() && cantPremios < lvls.get(0).getCantPremios()) {
-				premios.add(new Premio(r.nextInt(100) % 2));
+				premios.add(new Premio(r.nextInt(100) % 3));
 				cantPremios++;
 			}
 		}
@@ -329,8 +338,6 @@ public class GamePanel extends JPanel {
 			}
 
 			for (Dardo tempDart : darts) {
-				System.out.println(hitbox.intersects(tempDart.getHitbox()));
-
 				if (!tempBloon.isDead() && hitbox.intersects(tempDart.getHitbox())) {
 					visitorGlobo = new GloboCollisionVisitor(tempBloon);
 					tempDart.accept(visitorGlobo);
@@ -347,6 +354,16 @@ public class GamePanel extends JPanel {
 		System.out.println(jugador.getVidas());
 
 	}
+	
+	public void efectosPremios() {
+		if(!onGoingEffects.isEmpty()) {
+			EfectoTemporal efectoActivo = onGoingEffects.get(0);
+			if(efectoActivo.getTiempoDeshacer() == tiempodeJuego) {
+				efectoActivo.deshacerEfecto();
+			}
+		}
+		
+	}
 
 	private void terminarNivel() {
 		lvls.remove(0);
@@ -354,23 +371,35 @@ public class GamePanel extends JPanel {
 		globosAzules = 0;
 		globosVerdes = 0;
 		cantPremios = 0;
+		lvlClear.setVisible(true);
+		new java.util.Timer().schedule( 
+		        new java.util.TimerTask() {
+		            @Override
+		            public void run() {
+		            	lvlClear.setVisible(false);
+		            }
+		        }, 
+		        750 
+		);
+		
+		
+		
 	}
 
 	private void ganar() {
 		if (timer.isRunning())
 			timer.stop();
-		JOptionPane.showMessageDialog(this, "GANASTE!!", "Resultado", JOptionPane.INFORMATION_MESSAGE, null);
-		//luego de quitar el cartel se cierra el juego?
+		JOptionPane.showMessageDialog(this, "GANASTE!!", "JUEGO TERMINADO", JOptionPane.INFORMATION_MESSAGE, null);
 		System.exit(0);
-		System.out.println("aca termino todo señores"); //Borrar
 	}
 	
 	private void perder() {
+		updateLife();
+		repaint();
 		if (timer.isRunning())
 			timer.stop();
-		JOptionPane.showMessageDialog(this, "PERDISTE \n Reseteando nivel.", "Resultado", JOptionPane.INFORMATION_MESSAGE, null);
-		resetLevel(); //Resetea el nivel despues de perder?
-
+		JOptionPane.showMessageDialog(this, "PERDISTE \n Reseteando nivel.", "JUEGO TERMINADO", JOptionPane.INFORMATION_MESSAGE, null);
+		resetLevel();
 	}
 
 	private void resetLevel() {
@@ -378,29 +407,26 @@ public class GamePanel extends JPanel {
 			timer.stop();
 		//resetea en nievel actual.
 		if (!lvls.isEmpty()) {
-			Nivel nivel_actual = lvls.get(0);
-			nivel_actual.reset();
 			this.jugador = new Jugador();
 			this.jugador.setJugador();
+			this.jugador.decreaseLives(50);
 			this.darts = new ArrayList<Dardo>();
 			this.bloons = new ArrayList<Globo>();
 			this.premios = new ArrayList<Premio>();
 			timer.restart();
 		}
 	}
-	
-	
-	
-	
+		
 	
 	public void keyPressed(KeyEvent e) {
-		this.jugador.keyPressed(e);
 
 		if (e.getKeyCode() == KeyEvent.VK_SPACE) {
 			if (darts.size() < 5) {
 				darts.add(new Dardo(jugador.getX()));
-			}
-			
+			}			
+		}else {
+			this.jugador.keyPressed(e);
+
 		}
 
 	}
@@ -409,4 +435,32 @@ public class GamePanel extends JPanel {
 		this.jugador.keyReleased(e);
 	}
 
+	
+	
+	public static GamePanel getInstancia()
+	{
+		if (instancia == null)
+		{
+			instancia = new GamePanel();
+		}
+		
+		return instancia;
+	}
+	
+	public List<Globo> getBloons(){
+		return this.bloons;
+	}
+	
+	
+	public void setEfecto(EfectoTemporal e) {
+		onGoingEffects.add(e);
+	}
+	
+	public void removeEfecto(EfectoTemporal e) {
+		onGoingEffects.remove(e);
+	}
+	
+	public int getTiempoDeJuego() {
+		return tiempodeJuego;
+	}
 }

@@ -63,12 +63,12 @@ public class Jugador extends Entity{
 		int key = e.getKeyCode();
 		
 		if(key==KeyEvent.VK_LEFT) {
-			velocidad = -5;
+			velocidad = -7;
 			izquierdaPressed = true;
 		}
 		
 		if(key==KeyEvent.VK_RIGHT) {
-			velocidad = 5;
+			velocidad = 7;
 			derechaPressed = true;
 		}
 	}
@@ -81,7 +81,7 @@ public class Jugador extends Entity{
 			if(!derechaPressed) {
 				velocidad = 0;
 			}else {
-				velocidad = 5;
+				velocidad = 7;
 			}
 		}
 		

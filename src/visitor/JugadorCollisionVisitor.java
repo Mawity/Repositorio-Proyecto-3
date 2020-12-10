@@ -28,14 +28,12 @@ public class JugadorCollisionVisitor implements Visitor{
 	public void visit(Globo bloon) {
 		bloon.atacar(jugador);
 		bloon.setDead(true);
-		System.out.println("GLOBOxJUGADOR");
 	}
 
 	@Override
 	public void visit(Premio premio) {
 		premio.trigger();		
 		premio.setDead(true);
-		System.out.println("PREMIOxJUGADOR");
 	}
 	
 	

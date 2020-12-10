@@ -14,7 +14,7 @@ public class GameFrame extends JFrame {
 
 	private void inicializar() {
 		
-		add(new GamePanel());
+		add(GamePanel.getInstancia());
 		
 		setTitle(Constants.TITLE);
 		setIconImage(ImageFactory.crearImagen(Image.ICON).getImage());
