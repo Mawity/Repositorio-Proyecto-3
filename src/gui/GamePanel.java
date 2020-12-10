@@ -26,7 +26,6 @@ import image.Image;
 import image.ImageFactory;
 import levels.Nivel;
 import listener.GameEventListener;
-import powers.Efecto;
 import powers.EfectoTemporal;
 import visitor.GloboCollisionVisitor;
 import visitor.JugadorCollisionVisitor;
@@ -79,12 +78,13 @@ public class GamePanel extends JPanel {
 			lvls.add(new Nivel(i));
 		}
 
-		this.BGImage = ImageFactory.crearImagen(Image.BACKGROUND);				
-		this.dig_vida_1 = ImageFactory.crearImagen(Image.NUM_1);
-		this.dig_vida_2 = ImageFactory.crearImagen(Image.NUM_0);
-		this.dig_vida_3 = ImageFactory.crearImagen(Image.NUM_0);
+		this.BGImage = ImageFactory.crearImagen(Image.BACKGROUND, getClass().getResource(Constants.BACKGROUND_IMAGE_URL));	
 		
-		this.lvlClear = new JLabel(ImageFactory.crearImagen(Image.LVL_CLEAR));
+		this.dig_vida_1 = ImageFactory.crearImagen(Image.NUM_1, getClass().getResource(Constants.NUM_1_IMAGE_URL));
+		this.dig_vida_2 = ImageFactory.crearImagen(Image.NUM_0, getClass().getResource(Constants.NUM_0_IMAGE_URL));
+		this.dig_vida_3 = ImageFactory.crearImagen(Image.NUM_0, getClass().getResource(Constants.NUM_0_IMAGE_URL));
+		
+		this.lvlClear = new JLabel(ImageFactory.crearImagen(Image.LVL_CLEAR, getClass().getResource(Constants.LVL_CLEAR_IMAGE_URL)));
 		this.lvlClear.setVisible(false);
 		this.add(lvlClear);
 		this.timer = new Timer(Constants.GAME_SPEED, new GameLoop(this));
@@ -139,9 +139,7 @@ public class GamePanel extends JPanel {
 				timer.stop();
 			}
 		}
-
 		Toolkit.getDefaultToolkit().sync();
-
 	}
 	
 	private void drawLife(Graphics g) {
@@ -199,34 +197,34 @@ public class GamePanel extends JPanel {
 		switch(num) {
 		
 		case 0:
-			toReturn = ImageFactory.crearImagen(Image.NUM_0);
+			toReturn = ImageFactory.crearImagen(Image.NUM_0, getClass().getResource(Constants.NUM_0_IMAGE_URL));
 			break;
 		case 1:
-			toReturn = ImageFactory.crearImagen(Image.NUM_1);
+			toReturn = ImageFactory.crearImagen(Image.NUM_1, getClass().getResource(Constants.NUM_1_IMAGE_URL));
 			break;
 		case 2:
-			toReturn = ImageFactory.crearImagen(Image.NUM_2);
+			toReturn = ImageFactory.crearImagen(Image.NUM_2, getClass().getResource(Constants.NUM_2_IMAGE_URL));
 			break;
 		case 3:
-			toReturn = ImageFactory.crearImagen(Image.NUM_3);
+			toReturn = ImageFactory.crearImagen(Image.NUM_3, getClass().getResource(Constants.NUM_3_IMAGE_URL));
 			break;
 		case 4:
-			toReturn = ImageFactory.crearImagen(Image.NUM_4);
+			toReturn = ImageFactory.crearImagen(Image.NUM_4, getClass().getResource(Constants.NUM_4_IMAGE_URL));
 			break;
 		case 5:
-			toReturn = ImageFactory.crearImagen(Image.NUM_5);
+			toReturn = ImageFactory.crearImagen(Image.NUM_5, getClass().getResource(Constants.NUM_5_IMAGE_URL));
 			break;
 		case 6:
-			toReturn = ImageFactory.crearImagen(Image.NUM_6);
+			toReturn = ImageFactory.crearImagen(Image.NUM_6, getClass().getResource(Constants.NUM_6_IMAGE_URL));
 			break;
 		case 7:
-			toReturn = ImageFactory.crearImagen(Image.NUM_7);
+			toReturn = ImageFactory.crearImagen(Image.NUM_7, getClass().getResource(Constants.NUM_7_IMAGE_URL));
 			break;
 		case 8:
-			toReturn = ImageFactory.crearImagen(Image.NUM_8);
+			toReturn = ImageFactory.crearImagen(Image.NUM_8, getClass().getResource(Constants.NUM_8_IMAGE_URL));
 			break;
 		case 9:
-			toReturn = ImageFactory.crearImagen(Image.NUM_9);
+			toReturn = ImageFactory.crearImagen(Image.NUM_9, getClass().getResource(Constants.NUM_9_IMAGE_URL));
 			break;
 		}
 		
@@ -372,11 +370,13 @@ public class GamePanel extends JPanel {
 		globosVerdes = 0;
 		cantPremios = 0;
 		lvlClear.setVisible(true);
+		timer.stop();
 		new java.util.Timer().schedule( 
 		        new java.util.TimerTask() {
 		            @Override
 		            public void run() {
 		            	lvlClear.setVisible(false);
+		            	timer.start();
 		            }
 		        }, 
 		        750 

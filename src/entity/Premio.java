@@ -29,7 +29,7 @@ public class Premio extends Entity{
 		
 		if(i==0) {
 			efecto = new Slow();
-			imageIcon = ImageFactory.crearImagen(Image.PREMIO_TIEMPO);
+			imageIcon = ImageFactory.crearImagen(Image.PREMIO_TIEMPO, getClass().getResource(Constants.PREMIO_TIEMPO_IMAGE_URL));
 			setImage(imageIcon.getImage());
 
 			anchoSprite = imageIcon.getIconWidth();
@@ -37,14 +37,14 @@ public class Premio extends Entity{
 			
 		}else if(i==1) {
 			efecto = new HealthPot();
-			imageIcon = ImageFactory.crearImagen(Image.PREMIO_VIDA);
+			imageIcon = ImageFactory.crearImagen(Image.PREMIO_VIDA, getClass().getResource(Constants.PREMIO_VIDA_IMAGE_URL));
 			setImage(imageIcon.getImage());
 
 			anchoSprite = imageIcon.getIconWidth();
 			altoSprite = imageIcon.getIconHeight();
 		}else if(i==2){
 			efecto = new ExtraDMG();
-			imageIcon = ImageFactory.crearImagen(Image.PREMIO_DMG);
+			imageIcon = ImageFactory.crearImagen(Image.PREMIO_DMG, getClass().getResource(Constants.PREMIO_DMG_IMAGE_URL));
 			setImage(imageIcon.getImage());
 
 			anchoSprite = imageIcon.getIconWidth();

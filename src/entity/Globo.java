@@ -48,13 +48,13 @@ public class Globo extends Entity {
 		
 		
 		if(capas==1) {
-			imageIcon = ImageFactory.crearImagen(Image.GLOBO_ROJO);
+			imageIcon = ImageFactory.crearImagen(Image.GLOBO_ROJO, getClass().getResource(Constants.GLOBO_ROJO_IMAGE_URL));
 			setImage(imageIcon.getImage());
 		}else if(capas==2) {
-			imageIcon = ImageFactory.crearImagen(Image.GLOBO_AZUL);
+			imageIcon = ImageFactory.crearImagen(Image.GLOBO_AZUL, getClass().getResource(Constants.GLOBO_AZUL_IMAGE_URL));
 			setImage(imageIcon.getImage());
 		}else {
-			imageIcon = ImageFactory.crearImagen(Image.GLOBO_VERDE);
+			imageIcon = ImageFactory.crearImagen(Image.GLOBO_VERDE, getClass().getResource(Constants.GLOBO_VERDE_IMAGE_URL));
 			setImage(imageIcon.getImage());
 		}
 		

@@ -20,7 +20,7 @@ public class Dardo extends Entity{
 		velocidad = 10;
 		dmg = Constants.DMG_BASE_DARDO;
 		
-		ImageIcon imageIcon = ImageFactory.crearImagen(Image.PROYECTIL);
+		ImageIcon imageIcon = ImageFactory.crearImagen(Image.PROYECTIL, getClass().getResource(Constants.PROYECTIL_IMAGE_URL));
 		setImage(imageIcon.getImage());
 		
 		anchoSprite = imageIcon.getIconWidth();

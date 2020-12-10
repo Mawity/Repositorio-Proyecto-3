@@ -22,7 +22,7 @@ public class Jugador extends Entity{
 	}
 	
 	private void inicializar() {
-		ImageIcon imageIcon = ImageFactory.crearImagen(Image.JUGADOR);
+		ImageIcon imageIcon = ImageFactory.crearImagen(Image.JUGADOR, getClass().getResource(Constants.JUGADOR_IMAGE_URL));
 		setImage(imageIcon.getImage());
 		anchoSprite = imageIcon.getIconWidth();
 		altoSprite = imageIcon.getIconHeight();
