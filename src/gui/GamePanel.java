@@ -272,6 +272,7 @@ public class GamePanel extends JPanel {
 		timer.stop();
 		JOptionPane.showMessageDialog(this, "GANASTE!!", "Resultado", JOptionPane.INFORMATION_MESSAGE, null);
 		//luego de quitar el cartel se cierra el juego?
+		System.exit(0);
 		System.out.println("aca termino todo señores"); //Borrar
 	}
 	
@@ -291,6 +292,10 @@ public class GamePanel extends JPanel {
 			timer.restart();
 		}
 	}
+	
+	
+	
+	
 	
 	public void keyPressed(KeyEvent e) {
 		this.jugador.keyPressed(e);

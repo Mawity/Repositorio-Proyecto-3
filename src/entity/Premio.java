@@ -14,6 +14,7 @@ import visitor.Visitor;
 
 public class Premio extends Entity{
 	
+	private boolean esTemporal;
 	private Efecto efecto;
 	
 	
@@ -33,6 +34,7 @@ public class Premio extends Entity{
 
 			anchoSprite = imageIcon.getIconWidth();
 			altoSprite = imageIcon.getIconHeight();
+			esTemporal = true;
 			
 		}else if(i==1) {
 			efecto = new HealthPot();
@@ -41,6 +43,7 @@ public class Premio extends Entity{
 
 			anchoSprite = imageIcon.getIconWidth();
 			altoSprite = imageIcon.getIconHeight();
+			esTemporal = false;
 		}
 		
 		int xInicial = r.nextInt(Constants.GAME_WIDTH-this.getImage().getWidth(null)/2);

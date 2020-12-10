@@ -2,7 +2,7 @@ package powers;
 
 import entity.Jugador;
 
-public class HealthPot extends Efecto{
+public class HealthPot extends EfectoInstantaneo{
 
 		
 	@Override
