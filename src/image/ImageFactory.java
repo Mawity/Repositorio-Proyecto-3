@@ -47,6 +47,46 @@ public class ImageFactory {
         case ICON:
             imagen_final = new ImageIcon(Constants.ICON_IMAGE_URL);
             break;
+        case NUM_0:
+            imageIcon = new ImageIcon(Constants.NUM_0_IMAGE_URL);
+            imagen_final = new ImageIcon(imageIcon.getImage().getScaledInstance(50, -1, java.awt.Image.SCALE_SMOOTH));
+            break;
+        case NUM_1:
+            imageIcon = new ImageIcon(Constants.NUM_1_IMAGE_URL);
+            imagen_final = new ImageIcon(imageIcon.getImage().getScaledInstance(50, -1, java.awt.Image.SCALE_SMOOTH));
+            break;
+        case NUM_2:
+            imageIcon = new ImageIcon(Constants.NUM_2_IMAGE_URL);
+            imagen_final = new ImageIcon(imageIcon.getImage().getScaledInstance(50, -1, java.awt.Image.SCALE_SMOOTH));
+            break;
+        case NUM_3:
+            imageIcon = new ImageIcon(Constants.NUM_3_IMAGE_URL);
+            imagen_final = new ImageIcon(imageIcon.getImage().getScaledInstance(50, -1, java.awt.Image.SCALE_SMOOTH));
+            break;
+        case NUM_4:
+            imageIcon = new ImageIcon(Constants.NUM_4_IMAGE_URL);
+            imagen_final = new ImageIcon(imageIcon.getImage().getScaledInstance(50, -1, java.awt.Image.SCALE_SMOOTH));
+            break;
+        case NUM_5:
+            imageIcon = new ImageIcon(Constants.NUM_5_IMAGE_URL);
+            imagen_final = new ImageIcon(imageIcon.getImage().getScaledInstance(50, -1, java.awt.Image.SCALE_SMOOTH));
+            break;
+        case NUM_6:
+            imageIcon = new ImageIcon(Constants.NUM_6_IMAGE_URL);
+            imagen_final = new ImageIcon(imageIcon.getImage().getScaledInstance(50, -1, java.awt.Image.SCALE_SMOOTH));
+            break;
+        case NUM_7:
+            imageIcon = new ImageIcon(Constants.NUM_7_IMAGE_URL);
+            imagen_final = new ImageIcon(imageIcon.getImage().getScaledInstance(50, -1, java.awt.Image.SCALE_SMOOTH));
+            break;
+        case NUM_8:
+            imageIcon = new ImageIcon(Constants.NUM_8_IMAGE_URL);
+            imagen_final = new ImageIcon(imageIcon.getImage().getScaledInstance(50, -1, java.awt.Image.SCALE_SMOOTH));
+            break;
+        case NUM_9:
+            imageIcon = new ImageIcon(Constants.NUM_9_IMAGE_URL);
+            imagen_final = new ImageIcon(imageIcon.getImage().getScaledInstance(50, -1, java.awt.Image.SCALE_SMOOTH));
+            break;
         default:
             imageIcon = null;
             break;

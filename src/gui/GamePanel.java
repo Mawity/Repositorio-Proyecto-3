@@ -31,12 +31,19 @@ import visitor.JugadorCollisionVisitor;
 public class GamePanel extends JPanel {
 
 	private ImageIcon BGImage;
+	private ImageIcon dig_vida_1;
+	private ImageIcon dig_vida_2;
+	private ImageIcon dig_vida_3;
+	
 	private Timer timer;
 	private boolean inGame;
 	private int globosRojos;
 	private int globosAzules;
 	private int globosVerdes;
 	private int cantPremios;
+	private int dig_vida_orig1;
+	private int dig_vida_orig2;
+	private int dig_vida_orig3;
 
 	private Jugador jugador;
 	private List<Dardo> darts;
@@ -64,6 +71,10 @@ public class GamePanel extends JPanel {
 		}
 
 		this.BGImage = ImageFactory.crearImagen(Image.BACKGROUND);
+		this.dig_vida_1 = ImageFactory.crearImagen(Image.NUM_1);
+		this.dig_vida_2 = ImageFactory.crearImagen(Image.NUM_0);
+		this.dig_vida_3 = ImageFactory.crearImagen(Image.NUM_0);
+		
 		this.timer = new Timer(Constants.GAME_SPEED, new GameLoop(this));
 		this.timer.start();
 	}
@@ -103,6 +114,7 @@ public class GamePanel extends JPanel {
 		g.drawImage(BGImage.getImage(), 0, 0, null);
 
 		drawEntities(g);
+		drawLife(g);
 	}
 
 	private void drawEntities(Graphics g) {
@@ -120,6 +132,20 @@ public class GamePanel extends JPanel {
 		Toolkit.getDefaultToolkit().sync();
 
 	}
+	
+	private void drawLife(Graphics g) {
+		if (inGame) {
+			g.drawImage(dig_vida_1.getImage(), 0, 0, null);
+			g.drawImage(dig_vida_2.getImage(), dig_vida_1.getIconWidth(), 0, null);
+			g.drawImage(dig_vida_3.getImage(), dig_vida_1.getIconWidth()+dig_vida_2.getIconWidth(), 0, null);
+			dig_vida_orig1 = 1;
+			dig_vida_orig2 = 0;
+			dig_vida_orig3 = 0;
+		}else {
+			if (timer.isRunning())
+				timer.stop();
+		}
+	}
 
 	public void loop() {
 		update();
@@ -134,8 +160,70 @@ public class GamePanel extends JPanel {
 		spawnPremios();
 		movimiento();
 		colisiones();
+		updateLife();
 	}
-
+	
+	private void updateLife() {
+		int dig1 = this.jugador.getVidas()/100;
+		int dig2 = ((this.jugador.getVidas()%100) / 10);
+		int dig3 = this.jugador.getVidas() % 10;
+		
+		if (dig1 != this.dig_vida_orig1) {
+			this.dig_vida_orig1 = dig1;		
+			this.dig_vida_1 = getImageNumber(dig1);
+		} 
+		if (dig2 != this.dig_vida_orig2) {
+			this.dig_vida_orig2 = dig2;
+			this.dig_vida_2 = getImageNumber(dig2);
+		} 
+		if (dig3 != this.dig_vida_orig3) {
+			this.dig_vida_orig3 = dig3;
+			this.dig_vida_3 = getImageNumber(dig3);
+		}
+		System.out.println(dig1+" "+dig2+" "+dig3);
+	}
+	
+	private ImageIcon getImageNumber(int num) {
+		ImageIcon toReturn = null;
+		switch(num) {
+		
+		case 0:
+			toReturn = ImageFactory.crearImagen(Image.NUM_0);
+			System.out.println("Se Cambio Dig a 0"); //BORRAR
+			break;
+		case 1:
+			toReturn = ImageFactory.crearImagen(Image.NUM_1);
+			break;
+		case 2:
+			toReturn = ImageFactory.crearImagen(Image.NUM_2);
+			break;
+		case 3:
+			toReturn = ImageFactory.crearImagen(Image.NUM_3);
+			break;
+		case 4:
+			toReturn = ImageFactory.crearImagen(Image.NUM_4);
+			break;
+		case 5:
+			toReturn = ImageFactory.crearImagen(Image.NUM_5);
+			break;
+		case 6:
+			toReturn = ImageFactory.crearImagen(Image.NUM_6);
+			break;
+		case 7:
+			toReturn = ImageFactory.crearImagen(Image.NUM_7);
+			break;
+		case 8:
+			toReturn = ImageFactory.crearImagen(Image.NUM_8);
+			break;
+		case 9:
+			toReturn = ImageFactory.crearImagen(Image.NUM_9);
+			System.out.println("Se Cambio Dig a 9"); //BORRAR
+			break;
+		}
+		
+		return toReturn;
+	}
+	
 	private void spawnPremios() {
 		Random r = new Random();
 
@@ -269,7 +357,8 @@ public class GamePanel extends JPanel {
 	}
 
 	private void ganar() {
-		timer.stop();
+		if (timer.isRunning())
+			timer.stop();
 		JOptionPane.showMessageDialog(this, "GANASTE!!", "Resultado", JOptionPane.INFORMATION_MESSAGE, null);
 		//luego de quitar el cartel se cierra el juego?
 		System.exit(0);
@@ -277,18 +366,25 @@ public class GamePanel extends JPanel {
 	}
 	
 	private void perder() {
-		timer.stop();
-		JOptionPane.showMessageDialog(this, "PERDISTE /n Reseteando nivel.", "Resultado", JOptionPane.INFORMATION_MESSAGE, null);
+		if (timer.isRunning())
+			timer.stop();
+		JOptionPane.showMessageDialog(this, "PERDISTE \n Reseteando nivel.", "Resultado", JOptionPane.INFORMATION_MESSAGE, null);
 		resetLevel(); //Resetea el nivel despues de perder?
 
 	}
 
 	private void resetLevel() {
+		if (timer.isRunning())
+			timer.stop();
 		//resetea en nievel actual.
 		if (!lvls.isEmpty()) {
 			Nivel nivel_actual = lvls.get(0);
 			nivel_actual.reset();
-			//no se como mierda resetear las imagenes y las entidades del juego (estoy perdidisimo)
+			this.jugador = new Jugador();
+			this.jugador.setJugador();
+			this.darts = new ArrayList<Dardo>();
+			this.bloons = new ArrayList<Globo>();
+			this.premios = new ArrayList<Premio>();
 			timer.restart();
 		}
 	}
@@ -304,7 +400,7 @@ public class GamePanel extends JPanel {
 			if (darts.size() < 5) {
 				darts.add(new Dardo(jugador.getX()));
 			}
-
+			
 		}
 
 	}
