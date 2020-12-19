@@ -4,7 +4,6 @@ import java.net.URL;
 
 import javax.swing.ImageIcon;
 
-import constants.Constants;
 
 public class ImageFactory {
 
@@ -18,7 +17,6 @@ public class ImageFactory {
         
         
         
-        //getClass().getResource()
         
         
         
@@ -31,6 +29,9 @@ public class ImageFactory {
         case GLOBO_VERDE:
             imagen_final = new ImageIcon(new ImageIcon(ruta).getImage().getScaledInstance(70, -1, java.awt.Image.SCALE_SMOOTH));
             break;
+        case MOAB:
+            imagen_final = new ImageIcon(new ImageIcon(ruta).getImage().getScaledInstance(100, -1, java.awt.Image.SCALE_SMOOTH));
+            break;
         case JUGADOR:
             imagen_final = new ImageIcon(ruta);
             break;
@@ -41,6 +42,9 @@ public class ImageFactory {
             imagen_final = new ImageIcon(new ImageIcon(ruta).getImage().getScaledInstance(70, -1, java.awt.Image.SCALE_SMOOTH));
             break;
         case PROYECTIL:
+            imagen_final = new ImageIcon(new ImageIcon(ruta).getImage().getScaledInstance(30, -1, java.awt.Image.SCALE_SMOOTH));
+            break;
+        case VIENTO:
             imagen_final = new ImageIcon(new ImageIcon(ruta).getImage().getScaledInstance(30, -1, java.awt.Image.SCALE_SMOOTH));
             break;
         case BACKGROUND:

@@ -6,6 +6,7 @@ import javax.swing.ImageIcon;
 
 import constants.Constants;
 import image.*;
+import visitor.JugadorCollisionVisitor;
 import visitor.Visitor;
 
 
@@ -28,6 +29,8 @@ public class Jugador extends Entity{
 		altoSprite = imageIcon.getIconHeight();
 		int xInicial = Constants.GAME_WIDTH/2 - anchoSprite/2;
 		int yInicial = Constants.GAME_HEIGHT-100;
+		
+		visitor = new JugadorCollisionVisitor(this);
 		
 		velocidad = 0;
 		vidas = Constants.VIDA_MAXIMA;
@@ -126,25 +129,22 @@ public class Jugador extends Entity{
 		
 	}
 	
-	public int getVidas() {
+	@Override
+	public int getVida() {
 		return vidas;
 	}
 
+	@Override
+	public void setVelocidad(int i) {
+		// TODO Auto-generated method stub
+		
+	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	@Override
+	public int getVelocidad() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
 
 

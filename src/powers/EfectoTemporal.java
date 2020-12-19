@@ -8,7 +8,7 @@ public abstract class EfectoTemporal implements Efecto{
 	int tiempoDeshacer;
 	GamePanel gamePanel;
 	
-	public abstract void deshacerEfecto();
+	public abstract EfectoTemporal deshacerEfecto();
 	public abstract int getTiempoDeshacer();
 	
 	

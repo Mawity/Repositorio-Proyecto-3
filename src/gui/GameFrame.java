@@ -6,6 +6,7 @@ import constants.Constants;
 import image.Image;
 import image.ImageFactory;
 
+@SuppressWarnings("serial")
 public class GameFrame extends JFrame {
 
 	public GameFrame() {

@@ -3,7 +3,7 @@ package powers;
 import java.util.List;
 
 import constants.Constants;
-import entity.Globo;
+import entity.Entity;
 import gui.GamePanel;
 
 public class Slow extends EfectoTemporal{
@@ -18,21 +18,21 @@ public class Slow extends EfectoTemporal{
 	
 	@Override
 	public void realizarEfecto() {
-		List<Globo> lista = gamePanel.getBloons();
-		for(Globo tempBloon: lista) {
-			tempBloon.setVelocidad(tempBloon.getVelocidad()-1);			
+		List<Entity> lista = gamePanel.getEntities();
+		for(Entity tempEnt: lista) {
+			tempEnt.setVelocidad(0);			
 		}
 		this.tiempoDeshacer = gamePanel.getTiempoDeJuego()+this.duracion;
 		gamePanel.setEfecto(this);
 	}
 
 	@Override
-	public void deshacerEfecto() {
-		List<Globo> lista = gamePanel.getBloons();
-		for(Globo tempBloon: lista) {
-			tempBloon.setVelocidad(tempBloon.getVelocidad()+1);			
+	public EfectoTemporal deshacerEfecto() {
+		List<Entity> lista = gamePanel.getEntities();
+		for(Entity tempEnt: lista) {
+			tempEnt.setVelocidad(Constants.VELOCIDAD_BASE_ENEMIGO);			
 		}
-		gamePanel.removeEfecto(this);
+		return this;
 	}
 	
 	public int getTiempoDeshacer() { 

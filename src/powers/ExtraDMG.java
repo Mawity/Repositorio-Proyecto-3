@@ -1,10 +1,7 @@
 package powers;
 
-import java.util.List;
 
 import constants.Constants;
-import entity.Dardo;
-import entity.Globo;
 import gui.GamePanel;
 
 public class ExtraDMG extends EfectoTemporal{
@@ -24,8 +21,9 @@ public class ExtraDMG extends EfectoTemporal{
 	}
 
 	@Override
-	public void deshacerEfecto() {
+	public EfectoTemporal deshacerEfecto() {
 		Constants.changeDartsDMG(Constants.DMG_BASE_DARDO-1);
+		return this;
 	}
 	
 	public int getTiempoDeshacer() { 

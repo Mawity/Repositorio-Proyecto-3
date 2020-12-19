@@ -4,8 +4,6 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,44 +17,40 @@ import javax.swing.Timer;
 
 import constants.Constants;
 import entity.Dardo;
-import entity.Globo;
+import entity.Entity;
 import entity.Jugador;
-import entity.Premio;
+import factory.EnemigoFactory;
 import image.Image;
 import image.ImageFactory;
 import levels.Nivel;
 import listener.GameEventListener;
 import powers.EfectoTemporal;
-import visitor.GloboCollisionVisitor;
-import visitor.JugadorCollisionVisitor;
+import visitor.Visitor;
 
+@SuppressWarnings("serial")
 public class GamePanel extends JPanel {
 
 	private ImageIcon BGImage;
 	private ImageIcon dig_vida_1;
 	private ImageIcon dig_vida_2;
 	private ImageIcon dig_vida_3;
-	
+
 	private JLabel lvlClear;
-	
+
 	protected static GamePanel instancia;
-	
+
 	private Timer timer;
 	private int tiempodeJuego;
 	private boolean inGame;
-	private int globosRojos;
-	private int globosAzules;
-	private int globosVerdes;
-	private int cantPremios;
-
+	private int enemigosMuertos;
+	private int dardosEnJuego;
+	private int cantViento;
 
 	private Jugador jugador;
-	private List<Dardo> darts;
-	private List<Globo> bloons;
-	private List<Premio> premios;
+	private List<Entity> entidades;
+	private List<Entity> aAgregar;
 	private List<Nivel> lvls;
 	private List<EfectoTemporal> onGoingEffects;
-	
 
 	public GamePanel() {
 		inicializarVariables();
@@ -68,23 +62,28 @@ public class GamePanel extends JPanel {
 		this.jugador = new Jugador();
 		jugador.setJugador();
 
-		this.darts = new ArrayList<Dardo>();
-		this.bloons = new ArrayList<Globo>();
-		this.premios = new ArrayList<Premio>();
+		this.entidades = new ArrayList<Entity>();
+		this.aAgregar = new ArrayList<Entity>();
 		this.lvls = new ArrayList<Nivel>();
 		this.onGoingEffects = new ArrayList<EfectoTemporal>();
+
+		this.enemigosMuertos = 0;
+		this.tiempodeJuego = 0;
+		this.cantViento = 0;
 
 		for (int i = 1; i < Constants.CANTIDAD_NIVELES + 1; i++) {
 			lvls.add(new Nivel(i));
 		}
 
-		this.BGImage = ImageFactory.crearImagen(Image.BACKGROUND, getClass().getResource(Constants.BACKGROUND_IMAGE_URL));	
-		
+		this.BGImage = ImageFactory.crearImagen(Image.BACKGROUND,
+				getClass().getResource(Constants.BACKGROUND_IMAGE_URL));
+
 		this.dig_vida_1 = ImageFactory.crearImagen(Image.NUM_1, getClass().getResource(Constants.NUM_1_IMAGE_URL));
 		this.dig_vida_2 = ImageFactory.crearImagen(Image.NUM_0, getClass().getResource(Constants.NUM_0_IMAGE_URL));
 		this.dig_vida_3 = ImageFactory.crearImagen(Image.NUM_0, getClass().getResource(Constants.NUM_0_IMAGE_URL));
-		
-		this.lvlClear = new JLabel(ImageFactory.crearImagen(Image.LVL_CLEAR, getClass().getResource(Constants.LVL_CLEAR_IMAGE_URL)));
+
+		this.lvlClear = new JLabel(
+				ImageFactory.crearImagen(Image.LVL_CLEAR, getClass().getResource(Constants.LVL_CLEAR_IMAGE_URL)));
 		this.lvlClear.setVisible(false);
 		this.add(lvlClear);
 		this.timer = new Timer(Constants.GAME_SPEED, new GameLoop(this));
@@ -101,21 +100,9 @@ public class GamePanel extends JPanel {
 		g.drawImage(jugador.getImage(), jugador.getX(), jugador.getY(), this);
 	}
 
-	private void drawDardos(Graphics g) {
-		for (Dardo tempDart : darts) {
-			g.drawImage(tempDart.getImage(), tempDart.getX(), tempDart.getY(), this);
-		}
-	}
-
-	private void drawGlobos(Graphics g) {
-		for (Globo tempBloon : bloons) {
-			g.drawImage(tempBloon.getImage(), tempBloon.getX(), tempBloon.getY(), this);
-		}
-	}
-
-	private void drawPremios(Graphics g) {
-		for (Premio tempPremios : premios) {
-			g.drawImage(tempPremios.getImage(), tempPremios.getX(), tempPremios.getY(), this);
+	private void drawEntidades(Graphics g) {
+		for (Entity tempEntity : entidades) {
+			g.drawImage(tempEntity.getImage(), tempEntity.getX(), tempEntity.getY(), this);
 		}
 	}
 
@@ -131,9 +118,7 @@ public class GamePanel extends JPanel {
 	private void drawEntities(Graphics g) {
 		if (inGame) {
 			drawJugador(g);
-			drawDardos(g);
-			drawGlobos(g);
-			drawPremios(g);
+			drawEntidades(g);
 		} else {
 			if (timer.isRunning()) {
 				timer.stop();
@@ -141,13 +126,13 @@ public class GamePanel extends JPanel {
 		}
 		Toolkit.getDefaultToolkit().sync();
 	}
-	
+
 	private void drawLife(Graphics g) {
 		if (inGame) {
 			g.drawImage(dig_vida_1.getImage(), 0, 0, null);
 			g.drawImage(dig_vida_2.getImage(), dig_vida_1.getIconWidth(), 0, null);
-			g.drawImage(dig_vida_3.getImage(), dig_vida_1.getIconWidth()+dig_vida_2.getIconWidth(), 0, null);
-		}else {
+			g.drawImage(dig_vida_3.getImage(), dig_vida_1.getIconWidth() + dig_vida_2.getIconWidth(), 0, null);
+		} else {
 			if (timer.isRunning())
 				timer.stop();
 		}
@@ -161,41 +146,40 @@ public class GamePanel extends JPanel {
 
 	private void update() {
 		spawnEnemigos();
-		spawnPremios();
 		movimiento();
 		colisiones();
 		updateLife();
 		efectosPremios();
 	}
-	
+
 	private void updateLife() {
-		int dig1; 
+		int dig1;
 		int dig2;
 		int dig3;
-		
-		if(jugador.getVidas()<=0) {
+
+		if (jugador.getVida() <= 0) {
 			dig1 = 0;
 			dig2 = 0;
 			dig3 = 0;
-			
-		}else {
-			dig1 = this.jugador.getVidas()/100;
-			dig2 = ((this.jugador.getVidas()%100) / 10);
-			dig3 = this.jugador.getVidas() % 10;
+
+		} else {
+			dig1 = this.jugador.getVida() / 100;
+			dig2 = ((this.jugador.getVida() % 100) / 10);
+			dig3 = this.jugador.getVida() % 10;
 		}
 
-			this.dig_vida_1 = getImageNumber(dig1);
+		this.dig_vida_1 = getImageNumber(dig1);
 
-			this.dig_vida_2 = getImageNumber(dig2);
+		this.dig_vida_2 = getImageNumber(dig2);
 
-			this.dig_vida_3 = getImageNumber(dig3);
-		
+		this.dig_vida_3 = getImageNumber(dig3);
+
 	}
-	
+
 	private ImageIcon getImageNumber(int num) {
 		ImageIcon toReturn = null;
-		switch(num) {
-		
+		switch (num) {
+
 		case 0:
 			toReturn = ImageFactory.crearImagen(Image.NUM_0, getClass().getResource(Constants.NUM_0_IMAGE_URL));
 			break;
@@ -227,53 +211,40 @@ public class GamePanel extends JPanel {
 			toReturn = ImageFactory.crearImagen(Image.NUM_9, getClass().getResource(Constants.NUM_9_IMAGE_URL));
 			break;
 		}
-		
+
 		return toReturn;
-	}
-	
-	private void spawnPremios() {
-		Random r = new Random();
-
-		if (!lvls.isEmpty() && lvls.get(0).getCantRojos()==globosRojos && r.nextInt(100) % 15 == 0) {
-			if (!lvls.isEmpty() && cantPremios < lvls.get(0).getCantPremios()) {
-				premios.add(new Premio(r.nextInt(100) % 3));
-				cantPremios++;
-			}
-		}
-
 	}
 
 	private void spawnEnemigos() {
 		Random r = new Random();
-		boolean agregadoEsteTick = false;
-
-		if (r.nextInt(1000) % 50 == 0 && !lvls.isEmpty()) {
-			if (globosRojos < lvls.get(0).getCantRojos()) {
-				bloons.add(new Globo(1));
-				globosRojos++;
-				agregadoEsteTick = true;
-			}
-
-			if (globosAzules < lvls.get(0).getCantAzules() && !agregadoEsteTick) {
-				bloons.add(new Globo(2));
-				globosAzules++;
-				agregadoEsteTick = true;
-			}
-
-			if (globosVerdes < lvls.get(0).getCantVerdes() && !agregadoEsteTick) {
-				bloons.add(new Globo(3));
-				globosVerdes++;
-			}
-		}
-
+		int xInicial = r.nextInt(Constants.GAME_WIDTH - 60);
+		int yInicial = -10;
 		if (!lvls.isEmpty()) {
-			if (globosRojos + globosAzules + globosVerdes == lvls.get(0).getCantEnemigos()) {
-				if (bloons.isEmpty()) {
-					terminarNivel();
+			Nivel lvlActual = lvls.get(0);
+
+			if (r.nextInt(10) % 5 == 0) {
+				EnemigoFactory enemFact = new EnemigoFactory(lvlActual);
+				Entity nuevoEnemigo = enemFact.createEntity(xInicial, yInicial);
+				if (nuevoEnemigo != null) {
+					entidades.add(nuevoEnemigo);
 				}
 			}
+
+
+			if (!lvls.isEmpty()) {
+				if (enemigosMuertos == lvlActual.getCantEnemigos() && entidades.isEmpty()) {
+					terminarNivel();
+				}
+			} else {
+				if (jugador.getVida() <= 0) {
+					perder();
+				} else {
+					ganar();
+				}
+			}
+
 		} else {
-			if (jugador.getVidas() <= 0) {
+			if (jugador.getVida() <= 0) {
 				perder();
 			} else {
 				ganar();
@@ -284,106 +255,86 @@ public class GamePanel extends JPanel {
 
 	private void movimiento() {
 
-		List<Dardo> consumedDart = new ArrayList<Dardo>();
-		List<Globo> popped = new ArrayList<Globo>();
-		List<Premio> consumedPrize = new ArrayList<Premio>();
-
+		List<Entity> deadEntities = new ArrayList<Entity>();
+		
 		this.jugador.move();
 
-		for (Dardo tempDart : darts) {
-			if (tempDart.isDead()) {
-				consumedDart.add(tempDart);
+		for (Entity tempEnt : entidades) {
+			if (tempEnt.isDead()) {
+				deadEntities.add(tempEnt);
 			} else {
-				tempDart.move();
-			}
-		}
-		darts.removeAll(consumedDart);
-
-		for (Globo tempBloon : bloons) {
-			if (tempBloon.isDead()) {
-				popped.add(tempBloon);
-			} else {
-				tempBloon.move();
-			}
-		}
-		bloons.removeAll(popped);
-
-		for (Premio tempPremio : premios) {
-			if (tempPremio.isDead()) {
-				consumedPrize.add(tempPremio);
-			} else {
-				tempPremio.move();
+				tempEnt.move();
 
 			}
 		}
-		premios.removeAll(consumedPrize);
-
+		entidades.removeAll(deadEntities);
 	}
 
 	private void colisiones() {
 		Rectangle hitbox;
-		GloboCollisionVisitor visitorGlobo;
-		JugadorCollisionVisitor visitorJugador = new JugadorCollisionVisitor(jugador);
+		Visitor visitor;
 
-		for (Globo tempBloon : bloons) {
-			hitbox = tempBloon.getHitbox();
+		for (Entity tempEnt : entidades) {
+
+			hitbox = tempEnt.getHitbox();
 
 			if (hitbox.intersects(jugador.getHitbox())) {
-				tempBloon.accept(visitorJugador);
-				if(jugador.isDead()) {
+				tempEnt.accept(jugador.getVisitor());
+				if (jugador.isDead()) {
 					perder();
 				}
 			}
 
-			for (Dardo tempDart : darts) {
-				if (!tempBloon.isDead() && hitbox.intersects(tempDart.getHitbox())) {
-					visitorGlobo = new GloboCollisionVisitor(tempBloon);
-					tempDart.accept(visitorGlobo);
+			for (Entity tempEnt2 : entidades) {
+				if (!tempEnt.isDead() && hitbox.intersects(tempEnt2.getHitbox())) {
+					visitor = tempEnt.getVisitor();
+					tempEnt2.accept(visitor);
 				}
 			}
-		}
 
-		for (Premio tempPremio : premios) {
-			if (tempPremio.getHitbox().intersects(jugador.getHitbox())) {
-				tempPremio.accept(visitorJugador);
-			}
 		}
-		
-		System.out.println(jugador.getVidas());
+		entidades.addAll(aAgregar);
+		aAgregar = new ArrayList<Entity>();
 
 	}
-	
+
+	public void agregarEntidad(Entity e) {
+		aAgregar.add(e);
+	}
+
 	public void efectosPremios() {
-		if(!onGoingEffects.isEmpty()) {
-			EfectoTemporal efectoActivo = onGoingEffects.get(0);
-			if(efectoActivo.getTiempoDeshacer() == tiempodeJuego) {
-				efectoActivo.deshacerEfecto();
+		List<EfectoTemporal> efectosCadudacos = new ArrayList<EfectoTemporal>();
+		if (!onGoingEffects.isEmpty()) {
+			for (EfectoTemporal tempEfc : onGoingEffects) {
+				if (tempEfc.getTiempoDeshacer() == tiempodeJuego) {
+					efectosCadudacos.add(tempEfc.deshacerEfecto());
+				}
 			}
+			onGoingEffects.removeAll(efectosCadudacos);
 		}
-		
+
 	}
 
 	private void terminarNivel() {
 		lvls.remove(0);
-		globosRojos = 0;
-		globosAzules = 0;
-		globosVerdes = 0;
-		cantPremios = 0;
+		entidades = new ArrayList<Entity>();
+		for (EfectoTemporal tempEfc : onGoingEffects) {
+			tempEfc.deshacerEfecto();
+		}
+		onGoingEffects = new ArrayList<EfectoTemporal>();
+		dardosEnJuego = 0;
+		enemigosMuertos = 0;
+		cantViento = 0;
 		lvlClear.setVisible(true);
 		timer.stop();
-		new java.util.Timer().schedule( 
-		        new java.util.TimerTask() {
-		            @Override
-		            public void run() {
-		            	lvlClear.setVisible(false);
-		            	timer.start();
-		            }
-		        }, 
-		        750 
-		);
-		
-		
-		
+		new java.util.Timer().schedule(new java.util.TimerTask() {
+			@Override
+			public void run() {
+				lvlClear.setVisible(false);
+				timer.start();
+			}
+		}, 750);
+
 	}
 
 	private void ganar() {
@@ -392,41 +343,73 @@ public class GamePanel extends JPanel {
 		JOptionPane.showMessageDialog(this, "GANASTE!!", "JUEGO TERMINADO", JOptionPane.INFORMATION_MESSAGE, null);
 		System.exit(0);
 	}
-	
+
 	private void perder() {
 		updateLife();
 		repaint();
 		if (timer.isRunning())
 			timer.stop();
-		JOptionPane.showMessageDialog(this, "PERDISTE \n Reseteando nivel.", "JUEGO TERMINADO", JOptionPane.INFORMATION_MESSAGE, null);
+		JOptionPane.showMessageDialog(this, "PERDISTE \n Reseteando nivel.", "JUEGO TERMINADO",
+				JOptionPane.INFORMATION_MESSAGE, null);
 		resetLevel();
 	}
 
 	private void resetLevel() {
 		if (timer.isRunning())
 			timer.stop();
-		//resetea en nievel actual.
+		// resetea en nievel actual.
 		if (!lvls.isEmpty()) {
+			lvls.get(0).reiniciarNivel();
+			enemigosMuertos = 0;
+			dardosEnJuego = 0;
+			cantViento = 0;
 			this.jugador = new Jugador();
 			this.jugador.setJugador();
 			this.jugador.decreaseLives(50);
-			this.darts = new ArrayList<Dardo>();
-			this.bloons = new ArrayList<Globo>();
-			this.premios = new ArrayList<Premio>();
+			for (Entity tempEnt : entidades) {
+				tempEnt.setDead(true);
+			}
+			this.entidades = new ArrayList<Entity>();
+			for (EfectoTemporal tempEfc : onGoingEffects) {
+				tempEfc.deshacerEfecto();
+			}
+			this.onGoingEffects = new ArrayList<EfectoTemporal>();
 			timer.restart();
 		}
 	}
-		
-	
+
 	public void keyPressed(KeyEvent e) {
 
 		if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-			if (darts.size() < 5) {
-				darts.add(new Dardo(jugador.getX()));
-			}			
-		}else {
+			if (dardosEnJuego < 5) {
+				entidades.add(new Dardo(jugador.getX()));
+				dardosEnJuego++;
+			}
+		} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+			pause();
+		} else {
 			this.jugador.keyPressed(e);
+		}
 
+	}
+
+	public void setDardosEnJuego(int i) {
+		dardosEnJuego = i;
+	}
+
+	public void registrarEnemigoMuerto() {
+		enemigosMuertos++;
+	}
+
+	public int getDardosEnJuego() {
+		return dardosEnJuego;
+	}
+
+	private void pause() {
+		if (timer.isRunning()) {
+			timer.stop();
+		} else {
+			timer.start();
 		}
 
 	}
@@ -435,32 +418,40 @@ public class GamePanel extends JPanel {
 		this.jugador.keyReleased(e);
 	}
 
-	
-	
-	public static GamePanel getInstancia()
-	{
-		if (instancia == null)
-		{
+	public static GamePanel getInstancia() {
+		if (instancia == null) {
 			instancia = new GamePanel();
 		}
-		
+
 		return instancia;
 	}
-	
-	public List<Globo> getBloons(){
-		return this.bloons;
+
+	public List<Entity> getEntities() {
+		return this.entidades;
 	}
-	
-	
+
 	public void setEfecto(EfectoTemporal e) {
 		onGoingEffects.add(e);
 	}
-	
+
 	public void removeEfecto(EfectoTemporal e) {
 		onGoingEffects.remove(e);
 	}
-	
+
 	public int getTiempoDeJuego() {
 		return tiempodeJuego;
 	}
+	
+	public int getCantViento() {
+		return cantViento;
+	}
+	
+	public void aumentarCantViento() {
+		cantViento++;
+	}
+	
+	public void decrementarCantViento() {
+		cantViento--;
+	}
+	
 }

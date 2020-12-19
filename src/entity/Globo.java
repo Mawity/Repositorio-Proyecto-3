@@ -1,108 +1,60 @@
 package entity;
 
-
-
-import java.util.Random;
-
-import javax.swing.ImageIcon;
-
 import constants.Constants;
 import image.Image;
 import image.ImageFactory;
 import visitor.Visitor;
 
-public class Globo extends Entity {
-	protected int capas;
-	protected int dmg;
+public class Globo extends Enemigo {	
 	
-	
-	public Globo(int capas) {
-		incializar(capas);
+	public Globo(int vida) {
+		super();
+		incializar(vida);
 	}
 
-	private void incializar(int capas) {
-		this.capas = capas;
-
-		
-
-		Random r = new Random();
-		
-		establecerImagen(capas);
-
+	private void incializar(int vida) {
+		this.vida = vida;
+		dmg = vida*2;
 		setHitbox();
-
-		int xInicial = r.nextInt(Constants.GAME_WIDTH-this.getImage().getWidth(null)/2);
-		int yInicial = -10;
-		
-		dmg = capas*2;
-		velocidad = Constants.VELOCIDAD_BASE_GLOBO + capas;
-		
-		setX(xInicial);
-		setY(yInicial);
-		
-				
+		velocidad = Constants.VELOCIDAD_BASE_ENEMIGO + vida;				
 	}
 	
-	private void establecerImagen(int capas) {
-		ImageIcon imageIcon;
-		
-		
-		if(capas==1) {
-			imageIcon = ImageFactory.crearImagen(Image.GLOBO_ROJO, getClass().getResource(Constants.GLOBO_ROJO_IMAGE_URL));
-			setImage(imageIcon.getImage());
-		}else if(capas==2) {
-			imageIcon = ImageFactory.crearImagen(Image.GLOBO_AZUL, getClass().getResource(Constants.GLOBO_AZUL_IMAGE_URL));
-			setImage(imageIcon.getImage());
-		}else {
-			imageIcon = ImageFactory.crearImagen(Image.GLOBO_VERDE, getClass().getResource(Constants.GLOBO_VERDE_IMAGE_URL));
-			setImage(imageIcon.getImage());
-		}
-		
-		anchoSprite = imageIcon.getIconWidth();
-		altoSprite = imageIcon.getIconHeight();
-		
-	}
 
-	@Override
-	public void move() {
-		y += velocidad;
-		if(y>Constants.GAME_HEIGHT) {
-			setDead(true);
-			atacar(Jugador.getJugador());
-		}
-		
-		
-		
-		setHitbox();
-	}
+
+
 	
-	public void atacar(Jugador jugador) {
-		jugador.decreaseLives(dmg);
-	}
+
 
 	public void decreaseLives(int dmgTaken) {
-		capas -= dmgTaken;
-		if(capas <= 0) {
+		vida -= dmgTaken;
+		if(vida <= 0) {
 			setDead(true);
 		}else {
-			establecerImagen(capas);
+			
+			if(vida==1) {
+				setImage(ImageFactory.crearImagen(Image.GLOBO_ROJO, getClass().getResource(Constants.GLOBO_ROJO_IMAGE_URL)).getImage());
+			}else if(vida==2) {
+				setImage(ImageFactory.crearImagen(Image.GLOBO_AZUL, getClass().getResource(Constants.GLOBO_AZUL_IMAGE_URL)).getImage());
+			}
+			if(velocidad>0) {
+				this.velocidad--;
+			}
+			
 		}
-	}
-	
-	public int getCapas() {
-		return capas;
-	}
-	
-	public void setVelocidad(int i) {
-		velocidad = i;
-	}
-	
-	public int getVelocidad() {
-		return velocidad;
 	}
 	
 	public void accept(Visitor v) {
 		v.visit(this);
+		
+	}
+	
+	@Override
+	public void setVelocidad(int i) {
+		if(i==0) {
+			this.velocidad = i;
+		}else {
+			this.velocidad = i + this.vida;
+		}
 		
 	}
 }

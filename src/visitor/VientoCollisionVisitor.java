@@ -7,50 +7,52 @@ import entity.Moab;
 import entity.Premio;
 import entity.Viento;
 
-public class JugadorCollisionVisitor implements Visitor{
+public class VientoCollisionVisitor implements Visitor {
 
-	private Jugador jugador;
+	@SuppressWarnings("unused")
+	private Viento viento;
 	
 	
-	public JugadorCollisionVisitor(Jugador jugador) {
-		this.jugador = jugador;
+	public VientoCollisionVisitor(Viento viento) {
+		this.viento = viento;
 	}
+	
 	
 	@Override
 	public void visit(Jugador jugador) {
-		
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
 	public void visit(Dardo dardo) {
-		
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
 	public void visit(Globo bloon) {
-		bloon.realizarDmg(jugador);
-		bloon.setDead(true);
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
 	public void visit(Premio premio) {
-		premio.trigger();		
-		premio.setDead(true);
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
 	public void visit(Moab moab) {
-		moab.realizarDmg(jugador);
-		moab.setDead(true);
+		// TODO Auto-generated method stub
+
 	}
+
 
 	@Override
 	public void visit(Viento viento) {
-		viento.realizarDmg(jugador);
-		viento.setDead(true);
+		// TODO Auto-generated method stub
+		
 	}
-	
-	
-	
 
 }

@@ -1,16 +1,9 @@
 package entity;
 
-import java.util.Random;
-
-import javax.swing.ImageIcon;
 
 import constants.Constants;
-import image.Image;
-import image.ImageFactory;
-import powers.ExtraDMG;
 import powers.Efecto;
-import powers.HealthPot;
-import powers.Slow;
+import visitor.PremioCollisionVisitor;
 import visitor.Visitor;
 
 public class Premio extends Entity{
@@ -18,54 +11,22 @@ public class Premio extends Entity{
 	private Efecto efecto;
 	
 	
-	public Premio(int efectoIndex) {
-		inicializar(efectoIndex);
+	public Premio() {
+		inicializar();
 	}
 	
-	private void inicializar(int i) {
-		ImageIcon imageIcon;
+	private void inicializar() {
 		velocidad = 3;
-		Random r = new Random();
-		
-		if(i==0) {
-			efecto = new Slow();
-			imageIcon = ImageFactory.crearImagen(Image.PREMIO_TIEMPO, getClass().getResource(Constants.PREMIO_TIEMPO_IMAGE_URL));
-			setImage(imageIcon.getImage());
-
-			anchoSprite = imageIcon.getIconWidth();
-			altoSprite = imageIcon.getIconHeight();
-			
-		}else if(i==1) {
-			efecto = new HealthPot();
-			imageIcon = ImageFactory.crearImagen(Image.PREMIO_VIDA, getClass().getResource(Constants.PREMIO_VIDA_IMAGE_URL));
-			setImage(imageIcon.getImage());
-
-			anchoSprite = imageIcon.getIconWidth();
-			altoSprite = imageIcon.getIconHeight();
-		}else if(i==2){
-			efecto = new ExtraDMG();
-			imageIcon = ImageFactory.crearImagen(Image.PREMIO_DMG, getClass().getResource(Constants.PREMIO_DMG_IMAGE_URL));
-			setImage(imageIcon.getImage());
-
-			anchoSprite = imageIcon.getIconWidth();
-			altoSprite = imageIcon.getIconHeight();
-			
-			
-		}
-		
-		int xInicial = r.nextInt(Constants.GAME_WIDTH-this.getImage().getWidth(null)/2);
-		int yInicial = -10;
-		
-		setX(xInicial);
-		setY(yInicial);
-		
+		visitor = new PremioCollisionVisitor(this);
 		setHitbox();
-
 	}
 
 	@Override
 	public void move() {
 		this.y += this.velocidad;
+		if(y>Constants.GAME_HEIGHT) {
+			this.setDead(true);
+		}
 		setHitbox();
 	}
 	
@@ -78,6 +39,29 @@ public class Premio extends Entity{
 		
 	}
 	
+	public void setEfecto(Efecto e) {
+		efecto = e;
+	}
 	
+
+	@Override
+	public void setVelocidad(int i) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int getVelocidad() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getVida() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
 	
 }

@@ -4,6 +4,7 @@ import java.awt.Image;
 import java.awt.Rectangle;
 
 import visitor.Visitable;
+import visitor.Visitor;
 
 public abstract class Entity implements Visitable{
 	
@@ -15,6 +16,8 @@ public abstract class Entity implements Visitable{
 	protected int anchoSprite;
 	protected int altoSprite;
 	protected int velocidad;
+	
+	protected Visitor visitor;
 	
 	protected Rectangle hitbox;
 	
@@ -66,6 +69,25 @@ public abstract class Entity implements Visitable{
 	public boolean isDead() {
 		return dead;
 	}
+	
+	public void setAnchoSprite(int w) {
+		this.anchoSprite = w;
+	}
+	
+	public void setAltoSprite(int h) {
+		this.altoSprite = h;
+	}
+	
+	public abstract void setVelocidad(int i);
+
+	public abstract int getVelocidad();
+	
+	public abstract int getVida();
+	
+	public Visitor getVisitor() {
+		return this.visitor;
+	}
+	
 	
 	
 }
